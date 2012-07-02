@@ -12,15 +12,33 @@
          More info: h5bp.com/i/378 -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <title></title>
-    <meta name="description" content="">
+    <title>StopFrame</title>
 
     <!-- Mobile viewport optimized: h5bp.com/viewport -->
     <meta name="viewport" content="width=device-width">
 
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
-
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="vendor/mediaelement/build/mediaelementplayer.css" />
+
+    <style>
+        .mejs-overlay-button {
+            display: none;
+        }
+
+        figure {
+            position: relative;
+            width:  568px;
+            height: 320px; /*T ODO: more */
+        }
+
+        #overlay {
+            position: absolute;
+            top:    0;
+            left:   0;
+            z-index: 1000;
+            pointer-events: none;
+        }
+    </style>
 
     <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
@@ -36,25 +54,95 @@
 
     <!-- Add your site or application content here -->
 
+    <figure>
+        <video width="568" height="320" poster="poster.jpg" controls="controls" preload="none">
+            <!-- MP4 for Safari, IE9, iPhone, iPad, Android, and Windows Phone 7 -->
+            <source type="video/mp4" src="video/BBCNewsSpecials.mp4" />
+            <!-- WebM/VP8 for Firefox4, Opera, and Chrome -->
+            <source type="video/webm" src="video/BBCNewsSpecials.webm" />
+            <!-- Ogg/Vorbis for older Firefox and Opera versions -->
+            <source type="video/ogg" src="video/BBCNewsSpecials.ogv" />
+            
+            <!-- Flash fallback for non-HTML5 browsers without JavaScript -->
+            <object width="568" height="320" type="application/x-shockwave-flash" data="flashmediaelement.swf">
+                <param name="movie" value="vendor/mediaelement/build/flashmediaelement.swf" />
+                <param name="flashvars" value="controls=true&file=video/BBCNewsSpecials.mp4" />
+                <!-- Image as a last resort -->
+                <img src="poster.jpg" width="568" height="320" title="No video playback capabilities" />
+            </object>
+        </video>
+
+        <div id="overlay">
+        </div>
+
+        <figcaption>
+        </figcaption>
+
+        <nav>
+        </nav>
+    </figure>
+
 
     <!-- JavaScript at the bottom for fast page loading: http://developer.yahoo.com/performance/rules.html#js_bottom -->
+    <script src="js/vendor/jquery-1.7.2.min.js"></script>
 
-    <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.7.2.min.js"><\/script>')</script>
+    <script src="vendor/mediaelement/build/mediaelement-and-player.js"></script>
+    <script src="vendor/popcorn-js/popcorn.js"></script>
+    <script src="vendor/popcorn-js/plugins/code/popcorn.code.js"></script>
 
-    <!-- scripts concatenated and minified via build script -->
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
-    <!-- end scripts -->
 
-    <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
-         mathiasbynens.be/notes/async-analytics-snippet -->
     <script>
-        var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-        s.parentNode.insertBefore(g,s)}(document,'script'));
+    // using jQuery
+    $('video').mediaelementplayer({
+        features: ['playpause','progress'],
+        // Hide controls when playing and mouse is not over the video
+        alwaysShowControls: false,
+        // force iPad's native controls
+        iPadUseNativeControls: false,
+        // force iPhone's native controls
+        iPhoneUseNativeControls: false, 
+        // force Android's native controls
+        AndroidUseNativeControls: false,
+        // forces the hour marker (##:00:00)
+        alwaysShowHours: false,
+        // show framecount in timecode (##:00:00:00)
+        showTimecodeFrameCount: false,
+        // turns keyboard support on and off for this instance
+        enableKeyboard: false,
+
+        success: function(media, node, player) {
+            // alert('mode: ' + media.pluginType);
+            var pop = Popcorn("video");
+
+            media.addEventListener('play', function() {
+                $('#overlay').html(''); 
+            }, true);
+
+            pop.code({
+                start: 1,
+                end:    5,
+                onStart:    function() {}, 
+                onEnd:    function() {
+                    player.pause();
+                    $('#overlay').html('<img src="1.png">');
+                }, 
+            });
+            
+            pop.code({
+                start: 6,
+                end:    7,
+                onStart:    function() {}, 
+                onEnd:    function() {
+                    player.pause();
+                    $('#overlay').html('<img src="2.png">');
+                }, 
+            });
+            
+        }
+    });
     </script>
+    <!-- end scripts -->
 </body>
 </html>
