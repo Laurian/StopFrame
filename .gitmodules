@@ -1,0 +1,9 @@
+[submodule "vendor/normalise.css"]
+	path = vendor/normalise.css
+	url = git://github.com/necolas/normalize.css.git
+[submodule "vendor/mediaelement"]
+	path = vendor/mediaelement
+	url = git://github.com/johndyer/mediaelement.git
+[submodule "vendor/popcorn-js"]
+	path = vendor/popcorn-js
+	url = git://github.com/mozilla/popcorn-js.git
